@@ -1,0 +1,11 @@
+name = "web-clipper"
+main = "index.js"
+compatibility_date = "2024-01-01"
+
+[vars]
+GITHUB_REPO = "narendranag/web-clipper"
+GITHUB_BRANCH = "main"
+
+# Secrets (set via `wrangler secret put`):
+#   AUTH_TOKEN    — shared secret for the bookmarklet
+#   GITHUB_TOKEN  — GitHub personal access token
