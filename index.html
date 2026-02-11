@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Web Clipper — Install</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --paper: #f5f0e8;
+    --accent: #c0392b;
+    --muted: #8a8072;
+    --border: #d4cec4;
+    --highlight: #fdf6e3;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Source Serif 4', Georgia, serif;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 4rem 2rem;
+    line-height: 1.7;
+  }
+
+  .container {
+    max-width: 640px;
+    width: 100%;
+  }
+
+  h1 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+
+  h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+  }
+
+  p {
+    margin-bottom: 1.25rem;
+    color: #3a3a3a;
+  }
+
+  .bookmarklet-dock {
+    background: white;
+    border: 2px solid var(--ink);
+    border-radius: 8px;
+    padding: 2rem 2.5rem;
+    margin: 2.5rem 0;
+    text-align: center;
+    position: relative;
+  }
+
+  .bookmarklet-dock::before {
+    content: '↓ drag to bookmarks bar ↓';
+    position: absolute;
+    top: -1.8rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .bookmarklet-link {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: white;
+    background: var(--accent);
+    padding: 0.7rem 1.8rem;
+    border-radius: 4px;
+    text-decoration: none;
+    cursor: grab;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    box-shadow: 0 2px 0 #922b21;
+    user-select: none;
+  }
+
+  .bookmarklet-link:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 0 #922b21;
+  }
+
+  .bookmarklet-link:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 0 #922b21;
+    cursor: grabbing;
+  }
+
+  .step {
+    display: flex;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--accent);
+    background: #fdecea;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 0.15rem;
+  }
+
+  .step-text {
+    flex: 1;
+  }
+
+  .step-text strong {
+    display: block;
+    margin-bottom: 0.15rem;
+  }
+
+  .step-text p {
+    margin-bottom: 0;
+    font-size: 0.95rem;
+  }
+
+  hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 2.5rem 0;
+  }
+
+  .config-section {
+    background: var(--highlight);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1.5rem 2rem;
+    margin: 2rem 0;
+  }
+
+  .config-section h3 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+
+  .config-field {
+    margin-bottom: 1rem;
+  }
+
+  .config-field:last-child {
+    margin-bottom: 0;
+  }
+
+  .config-field label {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+    color: var(--ink);
+  }
+
+  .config-field input {
+    width: 100%;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: white;
+    color: var(--ink);
+  }
+
+  .config-field input:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  .config-field .hint {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-top: 0.25rem;
+  }
+
+  button.generate {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.55rem 1.2rem;
+    background: var(--ink);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    transition: opacity 0.15s;
+  }
+
+  button.generate:hover { opacity: 0.85; }
+
+  .preview-section {
+    margin-top: 2.5rem;
+  }
+
+  .preview-section h3 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+
+  .preview-overlay {
+    background: white;
+    border: 2px solid var(--ink);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .preview-header {
+    background: var(--ink);
+    color: white;
+    padding: 0.6rem 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .preview-body {
+    padding: 1.5rem;
+  }
+
+  .preview-body blockquote {
+    border-left: 3px solid var(--accent);
+    padding-left: 1rem;
+    margin-bottom: 1rem;
+    font-style: italic;
+    color: #3a3a3a;
+  }
+
+  .preview-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+  }
+
+  .preview-meta a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .preview-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .preview-actions button {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: opacity 0.15s;
+    border: none;
+  }
+
+  .btn-save {
+    background: var(--accent);
+    color: white;
+  }
+
+  .btn-cancel {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border) !important;
+  }
+
+  .footer {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+    text-align: center;
+    letter-spacing: 0.05em;
+  }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85em;
+    background: #eae5dc;
+    padding: 0.15em 0.4em;
+    border-radius: 3px;
+  }
+
+  .source-toggle {
+    margin-top: 2rem;
+  }
+
+  .source-toggle summary {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .source-toggle pre {
+    margin-top: 1rem;
+    background: var(--ink);
+    color: #c8c1b4;
+    padding: 1.25rem;
+    border-radius: 6px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <h1>Web Clipper</h1>
+  <h2>Clip, save, share.</h2>
+  <p>
+    A bookmarklet that grabs your selected text and the page URL,
+    then sends it to your site. Select any passage on any page,
+    click the bookmarklet, and you're done.
+  </p>
+
+  <div class="bookmarklet-dock">
+    <a class="bookmarklet-link" id="bookmarklet" href="#">&#9986; Clip</a>
+  </div>
+
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-text">
+      <strong>Drag the button above to your bookmarks bar.</strong>
+      <p>In Chrome: View &#8594; Always Show Bookmarks Bar. In Safari: View &#8594; Show Favorites Bar.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-text">
+      <strong>Select any text on a page.</strong>
+      <p>Highlight a passage you want to clip from any article or website.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-text">
+      <strong>Click &#9986; Clip in your bookmarks bar.</strong>
+      <p>A small overlay appears showing your clip. Hit Save to send it to your site.</p>
+    </div>
+  </div>
+
+  <hr>
+
+  <div class="config-section">
+    <h3>Configuration</h3>
+    <div class="config-field">
+      <label>API Endpoint</label>
+      <input type="text" id="apiEndpoint" placeholder="https://your-worker.your-subdomain.workers.dev/clip" value="">
+      <div class="hint">Your Cloudflare Worker URL. Leave blank for local preview mode.</div>
+    </div>
+    <div class="config-field">
+      <label>Auth Token</label>
+      <input type="password" id="authToken" placeholder="your-secret-token" value="">
+      <div class="hint">A shared secret so only you can post clips.</div>
+    </div>
+    <button class="generate" onclick="generateBookmarklet()">Regenerate Bookmarklet</button>
+  </div>
+
+  <hr>
+
+  <div class="preview-section">
+    <h3>Preview &#8212; what you'll see when you clip</h3>
+    <div class="preview-overlay">
+      <div class="preview-header">
+        <span>&#9986; Web Clipper</span>
+        <span style="cursor:pointer">&#10005;</span>
+      </div>
+      <div class="preview-body">
+        <blockquote>"The best time to plant a tree was twenty years ago. The second best time is now."</blockquote>
+        <div class="preview-meta">
+          From: <a href="#">Example Article Title</a><br>
+          <span style="opacity:0.7">example.com &middot; just now</span>
+        </div>
+        <div class="preview-actions">
+          <button class="btn-save">&#10003; Save Clip</button>
+          <button class="btn-cancel">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <details class="source-toggle">
+    <summary>View bookmarklet source</summary>
+    <pre id="sourceCode"></pre>
+  </details>
+
+  <div class="footer">
+    Web Clipper &#8212; bookmarklet &#8594; cloudflare worker &#8594; github pages &#8594; email
+  </div>
+
+</div>
+
+<script>
+function getBookmarkletSource(apiEndpoint, authToken) {
+  var src = "(function() {\n" +
+    "  var API = '" + (apiEndpoint || '') + "';\n" +
+    "  var TOKEN = '" + (authToken || '') + "';\n" +
+    "  var sel = window.getSelection().toString().trim();\n" +
+    "  if (!sel) { alert('Select some text first, then click Clip.'); return; }\n" +
+    "  var url = location.href;\n" +
+    "  var title = document.title;\n" +
+    "  var domain = location.hostname;\n" +
+    "  var now = new Date().toISOString();\n" +
+    "  var overlay = document.createElement('div');\n" +
+    "  overlay.id = '_clipper_overlay';\n" +
+    "  overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:999999;display:flex;align-items:flex-start;justify-content:center;padding-top:10vh;font-family:-apple-system,system-ui,sans-serif;';\n" +
+    "  var card = document.createElement('div');\n" +
+    "  card.style.cssText = 'background:#fff;border-radius:8px;width:480px;max-width:90vw;box-shadow:0 25px 60px rgba(0,0,0,0.3);overflow:hidden;';\n" +
+    "  var header = document.createElement('div');\n" +
+    "  header.style.cssText = 'background:#1a1a1a;color:#fff;padding:10px 16px;font-size:12px;font-weight:600;display:flex;justify-content:space-between;align-items:center;letter-spacing:0.05em;';\n" +
+    "  header.innerHTML = '<span>\\u2702 WEB CLIPPER</span>';\n" +
+    "  var closeBtn = document.createElement('span');\n" +
+    "  closeBtn.textContent = '\\u2715';\n" +
+    "  closeBtn.style.cssText = 'cursor:pointer;padding:2px 6px;';\n" +
+    "  closeBtn.onclick = function() { overlay.remove(); };\n" +
+    "  header.appendChild(closeBtn);\n" +
+    "  var body = document.createElement('div');\n" +
+    "  body.style.cssText = 'padding:20px;';\n" +
+    "  var quote = document.createElement('blockquote');\n" +
+    "  quote.style.cssText = 'border-left:3px solid #c0392b;padding-left:12px;margin:0 0 14px 0;font-style:italic;color:#3a3a3a;line-height:1.6;font-size:14px;max-height:200px;overflow-y:auto;';\n" +
+    "  quote.textContent = sel.length > 1000 ? sel.substring(0, 1000) + '...' : sel;\n" +
+    "  var noteWrap = document.createElement('div');\n" +
+    "  noteWrap.style.cssText = 'margin-bottom:14px;';\n" +
+    "  var noteLabel = document.createElement('label');\n" +
+    "  noteLabel.textContent = 'Add a note (optional):';\n" +
+    "  noteLabel.style.cssText = 'display:block;font-size:11px;font-weight:600;color:#8a8072;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.05em;';\n" +
+    "  var noteInput = document.createElement('textarea');\n" +
+    "  noteInput.style.cssText = 'width:100%;font-family:inherit;font-size:13px;padding:8px;border:1px solid #d4cec4;border-radius:4px;resize:vertical;min-height:50px;box-sizing:border-box;';\n" +
+    "  noteInput.placeholder = 'Your thoughts on this passage...';\n" +
+    "  noteWrap.appendChild(noteLabel);\n" +
+    "  noteWrap.appendChild(noteInput);\n" +
+    "  var meta = document.createElement('div');\n" +
+    "  meta.style.cssText = 'font-size:11px;color:#8a8072;font-family:monospace;';\n" +
+    "  meta.innerHTML = 'From: <a href=\"' + url + '\" style=\"color:#c0392b;text-decoration:none;\">' + (title.length > 60 ? title.substring(0,60) + '...' : title) + '</a><br><span style=\"opacity:0.7\">' + domain + '</span>';\n" +
+    "  var actions = document.createElement('div');\n" +
+    "  actions.style.cssText = 'display:flex;gap:8px;margin-top:16px;padding-top:16px;border-top:1px solid #e8e4dc;';\n" +
+    "  var saveBtn = document.createElement('button');\n" +
+    "  saveBtn.textContent = '\\u2713 Save Clip';\n" +
+    "  saveBtn.style.cssText = 'font-family:inherit;font-size:12px;font-weight:600;padding:8px 18px;background:#c0392b;color:#fff;border:none;border-radius:4px;cursor:pointer;';\n" +
+    "  var cancelBtn = document.createElement('button');\n" +
+    "  cancelBtn.textContent = 'Cancel';\n" +
+    "  cancelBtn.style.cssText = 'font-family:inherit;font-size:12px;font-weight:600;padding:8px 18px;background:transparent;color:#8a8072;border:1px solid #d4cec4;border-radius:4px;cursor:pointer;';\n" +
+    "  cancelBtn.onclick = function() { overlay.remove(); };\n" +
+    "  var statusMsg = document.createElement('span');\n" +
+    "  statusMsg.style.cssText = 'font-size:11px;color:#8a8072;align-self:center;margin-left:auto;';\n" +
+    "  saveBtn.onclick = function() {\n" +
+    "    var clip = { text: sel, note: noteInput.value.trim(), url: url, title: title, domain: domain, clipped_at: now };\n" +
+    "    if (!API) {\n" +
+    "      var json = JSON.stringify(clip, null, 2);\n" +
+    "      if (navigator.clipboard) {\n" +
+    "        navigator.clipboard.writeText(json).then(function() {\n" +
+    "          statusMsg.textContent = 'Copied to clipboard!';\n" +
+    "          statusMsg.style.color = '#27ae60';\n" +
+    "          saveBtn.disabled = true;\n" +
+    "          saveBtn.style.opacity = '0.5';\n" +
+    "          setTimeout(function() { overlay.remove(); }, 1500);\n" +
+    "        });\n" +
+    "      } else { prompt('Copy this clip data:', json); overlay.remove(); }\n" +
+    "      return;\n" +
+    "    }\n" +
+    "    saveBtn.textContent = 'Saving...'; saveBtn.disabled = true;\n" +
+    "    fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + TOKEN }, body: JSON.stringify(clip) })\n" +
+    "    .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })\n" +
+    "    .then(function() { saveBtn.textContent = '\\u2713 Saved!'; saveBtn.style.background = '#27ae60'; setTimeout(function() { overlay.remove(); }, 1200); })\n" +
+    "    .catch(function(e) { statusMsg.textContent = 'Error: ' + e.message; statusMsg.style.color = '#c0392b'; saveBtn.textContent = '\\u2713 Save Clip'; saveBtn.disabled = false; });\n" +
+    "  };\n" +
+    "  actions.appendChild(saveBtn); actions.appendChild(cancelBtn); actions.appendChild(statusMsg);\n" +
+    "  body.appendChild(quote); body.appendChild(noteWrap); body.appendChild(meta); body.appendChild(actions);\n" +
+    "  card.appendChild(header); card.appendChild(body); overlay.appendChild(card);\n" +
+    "  overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };\n" +
+    "  var existing = document.getElementById('_clipper_overlay'); if (existing) existing.remove();\n" +
+    "  document.body.appendChild(overlay); noteInput.focus();\n" +
+    "})();";
+
+  return src;
+}
+
+function minifyBookmarklet(src) {
+  return 'javascript:' + encodeURIComponent(
+    src.replace(/\s*\n\s*/g, ' ').replace(/\s{2,}/g, ' ').trim()
+  );
+}
+
+function generateBookmarklet() {
+  var endpoint = document.getElementById('apiEndpoint').value.trim();
+  var token = document.getElementById('authToken').value.trim();
+  var src = getBookmarkletSource(endpoint, token);
+  var minified = minifyBookmarklet(src);
+
+  document.getElementById('bookmarklet').href = minified;
+  document.getElementById('sourceCode').textContent = src.trim();
+
+  var btn = document.querySelector('.generate');
+  btn.textContent = '\u2713 Updated!';
+  setTimeout(function() { btn.textContent = 'Regenerate Bookmarklet'; }, 1500);
+}
+
+generateBookmarklet();
+</script>
+</body>
+</html>
